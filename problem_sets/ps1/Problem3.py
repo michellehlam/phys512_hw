@@ -2,7 +2,11 @@ import numpy as np
 import scipy.interpolate as interp
 import matplotlib.pyplot as plt
 
-print(np.__version__)
+# function lakeshore
+# input: V = voltage values we want interpolated temperature values for 
+#        data = experimental data
+# output: interpolated temperature and mean standard deviation calculated from bootstrap resampling
+
 
 # import data
 dat = np.loadtxt('lakeshore.txt')
@@ -17,33 +21,36 @@ def lakeshore(V, data):
     
     # random number generator
     rng = np.random.default_rng(seed=12345)
-    N_resamp = 10
-    N_samp = 40
-    
-    intp_y_samp = []
+    N_resamp = 100              # number of times we resample the population
+    N_samp = int(len(x)*0.8)    # number of samples
+    intp_y_samp = []            # holds on the resample attempts
     for i in range(N_resamp):
         ind = list(range(x.size))
         # randomly choose N_samp samples
         to_interp = rng.choice(ind, size=N_samp, replace = False )
-        to_interp.sort() # increasing x
+        to_interp.sort()        # increasing x
 
         # interpolate again
-        resampled_fit = interp.splrep(x[to_interp],y[to_interp])
-        resampled_y = interp.splev(V, resampled_fit)
-        intp_y_samp.append(resampled_y)
+        resampled_fit = interp.splrep(x[to_interp],y[to_interp]) # fit our randomly chosen samples
+        resampled_y = interp.splev(V, resampled_fit)             # interpolate again
+        intp_y_samp.append(resampled_y)                          # store new interpolation attempt
 
     # Stats on resampling
     intp_y_samp = np.array(intp_y_samp)
-    std = np.std(intp_y_samp, axis = 0)
-    error2 = np.nanmean(std)
-    error2_std = np.nanstd(std)
+    std = np.std(intp_y_samp, axis = 0)              # find standard deviation of our resamples       
+    error2 = np.nanmean(std)                         # mean standard deviation
+    error2_std = np.nanstd(std)                      # standard deviation of our standard deviation
     print('std: ', (error2), '+/- ', (error2_std))
 
-    return temp_at_V, error2
+    return temp_at_V, error2     # output the interpolated temperature, and our mean standard deviation
 
+# test voltage values
 test_V = np.linspace(0.1, 1.6, 1001)
+#interpolated temperature
 test_T, error_T = lakeshore(test_V, dat)
 
-plt.plot(dat[:,1], dat[:,0], '+')
-plt.plot(test_V, test_T)
+# plotting
+plt.plot(dat[:,1], dat[:,0], '+', label = 'raw data')
+plt.plot(test_V, test_T, label = 'interpolated values')
+plt.legend()
 plt.show()

@@ -55,8 +55,8 @@ def rat_interp(x,y,x_test,use_pinv):
         output = np.linalg.inv(matx)@y
     p = output[:n+1]                            # the first n+1 elements belong to p, top
     q = output[n+1:]                            # rest of the m elements belong to q, bottom
-    #print('p:',p)
-    #print('q:',q)
+    print('p:',p)
+    print('q:',q)
     
     # now that we have p,q we can interpolate our temperature
     top = 0 # starting point
@@ -87,10 +87,18 @@ plt.legend()
 plt.title('Cosine function')
 plt.show()
 
+plt.plot(test_x, pred_y_rat-np.cos(test_x), label = 'rational interp')
+plt.plot(test_x, pred_y_poly-np.cos(test_x), label = 'polynomial interp')
+plt.plot(test_x, pred_y_spline-np.cos(test_x), label = 'spline')
+plt.legend()
+plt.title('Residuals: Cosine function')
+plt.show()
+
+
 #------------------------------------------------------------------------------------
 # Pt 2: lorentzian function
 # data points:
-x = np.linspace(-1,1,8)
+x = np.linspace(-1,1,6)
 y = 1/(1+x**2)
 
 test_x = np.linspace(-1, 1, 1001)
@@ -106,9 +114,17 @@ plt.title('lorentzian function')
 plt.legend()
 plt.show()
 
+plt.plot(test_x, pred_y_rat-1/(1+test_x**2), label = 'rational interp')
+plt.plot(test_x, pred_y_poly-1/(1+test_x**2), label = 'polynomial interp')
+plt.plot(test_x, pred_y_spline-1/(1+test_x**2), label = 'spline')
+#plt.plot(test_x, pred_y_rat, label = 'rational interp')
+plt.title('Residuals: lorentzian function')
+plt.legend()
+plt.show()
+
 # Pt 2.5: Residuals/error in rational interpolation
 plt.plot(test_x, pred_y_rat-1/(1+test_x**2), label ='with pinv')
 plt.plot(test_x, rat_interp(x,y,test_x,use_pinv=False)-1/(1+test_x**2), label ='inv')
-plt.title('Lorentzian, rational interp residuals/error')
+plt.title('Lorentzian, rational interp residuals, 6pts')
 plt.legend()
 plt.show()
