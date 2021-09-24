@@ -72,15 +72,18 @@ for i in range(len(x)):
     y_quad[i] = Ez_quad(x[i],R)
     y_integ[int(i)] = Ez_integ(x[int(i)],R)
 
-# Plot analytical answer
+# analytical answer
 x_left = np.linspace(0,R,50)
 x_right = np.linspace(R, R+1, 50)
 true_right = 1/4/np.pi/epsilon0*sigma*4*np.pi*R**2/x_right**2 # from z>R 
 
+# plotting
 plt.plot(x,y_quad, label ='quad')
 plt.plot(x_left, 0*x_left, 'r')
 plt.plot(x_right,true_right, 'r',label = 'true')
 plt.plot(x, y_integ, label = 'integrator')
+plt.ylabel('Ez')
+plt.xlabel('z')
 plt.legend()
 plt.show()
 
