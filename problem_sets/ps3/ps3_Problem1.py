@@ -28,28 +28,35 @@ nstep_d = int(200/3)
 x = np.linspace(-20,20,nstep+1)
 x_d = np.linspace(-20,20,nstep_d+1)
 
-y_true = np.exp(np.arctan(x))
-y_true_d =np.exp(np.arctan(x_d))
+y_true = np.exp(np.arctan(x)-np.arctan(-20))
+y_true_d =np.exp(np.arctan(x_d)-np.arctan(-20))
 y = 0*x
-y[0] =0.2
+y[0] =1
 print(x[0])
 print(y[0])
 y_d = 0*x_d
 y_d[0] = 1
 
 for i in range(nstep):
-    h = x[i+1]-x[i]
+    h = (x[i+1]-x[i])
     y[i+1] = y[i] + rk4_step(der, x[i], y[i],h)
 
 for i in range(nstep_d):
-    h = x_d[i+1] - x_d[i]
+    h = (x_d[i+1] - x_d[i])
     y_d[i+1] = y_d[i] + rk4_stepd(der, x_d[i], y_d[i],h)
 
 print('1step:',np.std(y-y_true))
 print('more steps:',np.std(y_d-y_true_d))
+print('1step/more steps', np.std(y-y_true)/np.std(y_d - y_true_d))
 
 plt.plot(x,y_true, label = 'true')
 plt.plot(x,y, label = '1 step')
 plt.plot(x_d,y_d, label = 'more steps')
+plt.legend()
+plt.show()
+
+plt.plot(x, np.abs(y- y_true), label = '1 step')
+plt.plot(x_d, np.abs(y_d - y_true_d), label = ' more steps')
+plt.ylabel('Absolute value of Residuals')
 plt.legend()
 plt.show()
