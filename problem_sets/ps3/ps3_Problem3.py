@@ -3,23 +3,25 @@ import matplotlib.pyplot as plt
 
 file = np.loadtxt('dish_zenith.txt') # contains x,y,z positions in mm
 
+# Part A in pdf
+
 # ------------------------------------------------------------------
-#                        Part A 
+#                        Part  B
 # ------------------------------------------------------------------
 
 # Description: we have rotationally symmetric paraboloid: z - z0 = a ((x-x0)^2 - (y-y0)^2)
 #              Solve for x0, y0, z0, a
-#            - Pick new set of parameters to make the problem linear,  what are they?
-
+#            - Using linear least squares, we redefine the parameters
 # <d> = Am 
 # chi^2 = (d-Am)^T N^-1 (d-Am)
 # m = (A^T N^-1 A)^-1 A^T N^-1 d 
+# assume N = I in part B
 
 x = file[:,0]
 y = file[:,1]
 z = file[:,2]
 
-print(np.shape(x))
+# setting up our matrix A
 A = np.zeros([len(x),4])
 
 A[:,0] = x**2 + y**2
@@ -27,28 +29,54 @@ A[:,1] = x
 A[:,2] = y
 A[:,3] = np.ones(len(y))
 
-print(np.shape(A))
-
-
 A_transp = np.matrix.transpose(A)
 m = np.linalg.inv(A_transp@A)@A_transp@z
-print(m)
 
+# Redefine parameters we want
 a = m[0]
-x0=m[1]/2/a
-y0 = m[2]/2/a
+x0=-m[1]/2/a
+y0 = -m[2]/2/a
 z0 = m[3] - (x0**2*a + y0**2*a + a)
 
 print('a:', a)
-print('x0:', z0)
+print('x0:', x0)
 print('y0:',y0)
 print('z0:',z0)
 
+# lets calculate z with our fit parameters
+z_pred = A@m
 
-#def mat(x,y,z, params):
-#    A[i,:] = 
-
-#plt.plot(x)
+#plt.plot(z_pred, z, '.')
 #plt.show()
 
-#1, ix,y,z - A123 m = a, z0, y0,z0
+# plot residuals
+plt.plot(z-z_pred)
+plt.ylabel('residuals')
+plt.show()
+# --------------------------------------------------------------
+#                        Part C
+#---------------------------------------------------------------
+print('noise in data:',np.std(z-z_pred)) # estimate of noise (not error) in data
+
+# estimate noise in parameter fits
+# calculate error in a
+noise = np.std(z-z_pred)  # estimate noise from data 
+N = np.eye(len(z))*noise**2
+Ninv = np.eye(len(x))*noise**-2
+
+# parameter covariance thing to get uncertainty/error bars
+err_m = np.linalg.inv(A_transp@Ninv@A)
+errs = np.sqrt(np.diag(err_m))
+print('Error in fit parameters:', errs)
+print('a:', a, ' +/- ', errs[0])
+print('x0:', x0,' +/- ',errs[1])
+print('y0:',y0, ' +/- ', errs[2])
+print('z0:',z0, ' +/- ', errs[3])
+
+# focal length = 1/4a
+f = 1/4/a
+df = errs[0]/a*f
+
+print('focal length: ', f, '+/-' , df)
+
+
