@@ -66,17 +66,35 @@ Ninv = np.eye(len(x))*noise**-2
 
 # parameter covariance thing to get uncertainty/error bars
 err_m = np.linalg.inv(A_transp@Ninv@A)
+err_m_noN = np.linalg.inv(A_transp@A)
+
 errs = np.sqrt(np.diag(err_m))
-print('Error in fit parameters:', errs)
+errs_noN = np.sqrt(np.diag(err_m_noN))
+#print('Error in fit parameters:', errs)
+
+print('Error if estimate N:')
 print('a:', a, ' +/- ', errs[0])
 print('x0:', x0,' +/- ',errs[1])
 print('y0:',y0, ' +/- ', errs[2])
 print('z0:',z0, ' +/- ', errs[3])
+print('')
+print('Error if N=1:')
+print('a:', a, ' +/- ', errs_noN[0])
+print('x0:', x0,' +/- ',errs_noN[1])
+print('y0:',y0, ' +/- ', errs_noN[2])
+print('z0:',z0, ' +/- ', errs_noN[3])
+print('')
+
 
 # focal length = 1/4a
 f = 1/4/a
 df = errs[0]/a*f
+df_noN = errs_noN[0]/a*f
 
+print('Calculated from estimate noise:')
 print('focal length: ', f, '+/-' , df)
+print('')
+print('Calculated with N=1:')
+print('focal length: ', f, '+/-' , df_noN)
 
 
