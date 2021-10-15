@@ -140,7 +140,7 @@ def fit_lm_clean(m,fun,x,y,Ninv=None,niter=10,chitol=0.01):
         else:
             lamda=update_lamda(lamda,False)
         print('on iteration ',i,' chisq is ',chisq,' with step ',dm,' and lamda ',lamda)
-    return m, errs
+    return m, errs, linv(lhs,lamda)
 
 #-------------------------------------------------------------------------------
 #                               Run program
@@ -153,7 +153,7 @@ ell = data[:,0]
 spec = data[:,1]
 
 #m0 = np.asarray([69,0.022,0.12,0.06,2.1e-9,0.95])
-m_fit,fit_error = fit_lm_clean(m0, get_spectrum, ell,spec, Ninv, niter = 10)
+m_fit,fit_error, inv_curvature = fit_lm_clean(m0, get_spectrum, ell,spec, Ninv, niter = 10)
 
 param_name = ['H0: ', 'ombh2: ', 'omch2: ','tau: ', 'As: ','ns: ']
 
@@ -165,7 +165,7 @@ param_file = np.empty([len(m_fit), 2])
 param_file[:,0] = m_fit
 param_file[:,1] = fit_error
 np.savetxt('planck_fit_params.txt', param_file)
-
+np.savetxt('param_covar.txt', inv_curvature)
 
 y_pred=get_spectrum(m_fit)
 y_pred=y_pred[:len(spec)]
