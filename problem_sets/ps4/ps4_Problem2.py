@@ -120,13 +120,13 @@ def fit_lm_clean(m,fun,x,y,Ninv=None,niter=10,chitol=0.01):
         chisq_new,lhs_new,rhs_new=get_matrices(m+dm,fun,x,y,Ninv)
         
         errs = np.sqrt(np.diag(lhs_inv))
-        if chisq_new<chisq:  
+        if chisq_new<chisq and m[3]>0.01:  
             #accept the step
             #check if we think we are converged - for this, check if 
             #lamda is zero (i.e. the steps are sensible), and the change in 
             #chi^2 is very small - that means we must be very close to the
             #current minimum
-            if lamda==0 and m[3]>0.01:
+            if lamda==0:
                 if (np.abs(chisq-chisq_new)<chitol):
                     print(np.abs(chisq-chisq_new))
                     print('Converged after ',i,' iterations of LM')
@@ -153,7 +153,7 @@ ell = data[:,0]
 spec = data[:,1]
 
 #m0 = np.asarray([69,0.022,0.12,0.06,2.1e-9,0.95])
-m_fit,fit_error, inv_curvature = fit_lm_clean(m0, get_spectrum, ell,spec, Ninv, niter = 10)
+m_fit,fit_error, inv_curvature = fit_lm_clean(m0, get_spectrum, ell,spec, Ninv, niter = 20)
 
 param_name = ['H0: ', 'ombh2: ', 'omch2: ','tau: ', 'As: ','ns: ']
 
@@ -164,8 +164,8 @@ for i in range(len(m_fit)):
 param_file = np.empty([len(m_fit), 2])
 param_file[:,0] = m_fit
 param_file[:,1] = fit_error
-np.savetxt('planck_fit_params.txt', param_file)
-np.savetxt('param_covar.txt', inv_curvature)
+np.savetxt('planck_fit_params2.txt', param_file)
+np.savetxt('param_covar2.txt', inv_curvature)
 
 y_pred=get_spectrum(m_fit)
 y_pred=y_pred[:len(spec)]
