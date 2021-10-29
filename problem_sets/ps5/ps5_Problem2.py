@@ -10,10 +10,8 @@ def gauss(x):
     return 1/np.sqrt(2*np.pi*sigma**2)*np.exp(-0.5*x**2/sigma**2)  
     
 def correlation(arr1, arr2): # basically autocorrelation , f(x) = g(x)
-    x = arr1
-    y = arr2
-    f = gauss(x)
-    g = gauss(y)
+    f = arr1
+    g = arr2
     # normalize
     f=f/f.sum()
     g=g/g.sum()
@@ -29,7 +27,6 @@ def correlation(arr1, arr2): # basically autocorrelation , f(x) = g(x)
 
     return h
 
-x1 = np.linspace(-10,10,100)
-x2 = np.linspace(-10,10,100)
+x = np.linspace(-10,10,101)
 
-correlation(x1,x2)
+correlation(gauss(x),gauss(x))

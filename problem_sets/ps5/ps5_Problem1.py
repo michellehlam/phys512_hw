@@ -6,12 +6,9 @@ import matplotlib.pyplot as plt
 # function "conv" takes array and amount to shift array
 # move to k-space so you can just multiply the 
 def conv(array, shift):
-
     f = array
-    x = np.linspace(0, len(f), len(f))
-
     # make delta function
-    g=0*x # 0 everywhere else
+    g=0*f # 0 everywhere else
     g[int(shift)]=1 # except at shift point
 
     # normalize
