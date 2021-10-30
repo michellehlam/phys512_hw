@@ -36,7 +36,7 @@ def gauss(x):
     
 x = np.linspace(-10,10,100)
 arr = gauss(x)
-shift = len(x)*0.5 #choose arbitary shift
+shift = len(x)*0.25 #choose arbitary shift
 shifted_gauss = conv(arr, shift)
 
 autocorr = corr(shifted_gauss, shifted_gauss) # autocorrelation

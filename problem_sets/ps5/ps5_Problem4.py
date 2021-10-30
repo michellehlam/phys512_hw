@@ -18,6 +18,7 @@ def conv_safe(f,g):
     f=f/f.sum()
     g=g/g.sum()
     
+    # add zeros
     zeros = np.zeros(int(len(f)*0.5))
     f = np.append(f,zeros)
     zeros2 = np.zeros(int(len(f)-len(g)))
@@ -27,12 +28,23 @@ def conv_safe(f,g):
     return h
 
 x1 = np.linspace(-10,10,75)
-x2 = np.linspace(-5,5,60)
+x2 = np.linspace(-5,5,90)
 f = gauss(x1,2.5)
 plt.plot(f/f.sum(), label = 'f')
 g = gauss(x2,0.25)
 plt.plot(g/g.sum(), label = 'g')
-h = conv_safe(f,g)
+
+if len(f)>len(g):
+    ff =f
+    gg = g
+elif len (f)<len(g): # order doesn't matter since it'll just multiply in k-space
+    ff = g
+    gg = f
+else: 
+    ff =f
+    gg = g
+
+h = conv_safe(ff,gg)
 
 plt.plot(h/h.sum(), label = 'h')
 print('output length:', len(h))
