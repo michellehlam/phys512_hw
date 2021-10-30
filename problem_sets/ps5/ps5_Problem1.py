@@ -32,5 +32,5 @@ def gauss(x):
 
 x = np.linspace(-10,10, 100)
 arr = gauss(x)
-shift = len(x)*0.25
+shift = len(x)*0.5
 h = conv(arr,shift)
