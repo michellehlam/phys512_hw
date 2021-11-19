@@ -54,10 +54,11 @@ t_use = t_accept[accept2]
 print(np.mean(t_use))
 print(np.std(t_use))
 print('percent accepted (efficiency): ', np.mean(accept))
+#print(len(t_use)/2/len(myexp)) prints same efficiency as above line
 
 aa, bb = np.histogram(t_use, bins)
 aa = aa/aa.sum()
-print(len(t_use)/2/len(myexp))
+
 plt.plot(cents,aa, '+', label = 'rejection method')
 plt.plot(cents, myexp/myexp.sum(), label = 'analytical')
 plt.legend()
