@@ -1,15 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-#x= np.linspace(0,100, 100)
-#k = 0.005
-#sigma = k*1e5
-#plt.plot(x,np.exp(-k*x), label = 'exponential')
-#plt.plot(x,np.exp(-x**2/sigma**2/2), label = 'gauss')
-#plt.legend()
-#plt.show()
-
-
 # goal: write rejection method to make exponential deviates from another distribution
 # - function for bounding distribution: 
 # - assume exponential deviates = non-negative , cut off distributoin at 0 
@@ -57,19 +48,18 @@ myexp = np.exp(-k*cents)
 
 accept = y_lor < np.exp(-k*t)
 t_accept = t[accept]
-accept = t_accept>=0
-t_use = t_accept[accept]
+accept2 = t_accept>=0
+t_use = t_accept[accept2]
 
 print(np.mean(t_use))
 print(np.std(t_use))
-print('percent accepted: ', np.mean(accept))
+print('percent accepted (efficiency): ', np.mean(accept))
 
 aa, bb = np.histogram(t_use, bins)
 aa = aa/aa.sum()
-
+print(len(t_use)/2/len(myexp))
 plt.plot(cents,aa, '+', label = 'rejection method')
-plt.plot(cents, lor/lor.sum(), label = 'analytical lorentz')
-plt.plot(cents, myexp/myexp.sum(), label = 'analytical exponential')
+plt.plot(cents, myexp/myexp.sum(), label = 'analytical')
 plt.legend()
 plt.show()
 
