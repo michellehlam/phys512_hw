@@ -27,6 +27,6 @@ plt.xlim(min(xs), max(xs))
 plt.legend()
 plt.show()
 
-print(np.mean(keepers))
-print(len(rand_exp)/len(u))
+
+print('percent accepted(efficiency): ', len(rand_exp)/len(u)*100, '%')
 

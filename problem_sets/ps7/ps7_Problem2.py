@@ -53,7 +53,7 @@ t_use = t_accept[accept2]
 
 print(np.mean(t_use))
 print(np.std(t_use))
-print('percent accepted (efficiency): ', np.mean(accept))
+print('percent accepted (efficiency): ', np.mean(accept)*100, '%'S)
 #print(len(t_use)/2/len(myexp)) prints same efficiency as above line
 
 aa, bb = np.histogram(t_use, bins)
