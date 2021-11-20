@@ -20,6 +20,7 @@ y_lor = 1/(1+t**2)*np.random.rand(n) # y_value on distribution, multiplied by 0 
 #plt.xlim(-10,10)
 #plt.show()
 
+# look at bounding distribution
 bins = np.linspace(0,10,501)
 aa, bb = np.histogram(t,bins)
 aa = aa/aa.sum()
@@ -33,7 +34,7 @@ actual = actual/actual.sum()
 #plt.plot(cents, actual, label = 'analytical')
 #plt.show()
 
-
+# look at exponential that we want to sample
 k = 1
 lor = 1/(1+cents**2)
 myexp = np.exp(-k*cents)
@@ -46,6 +47,7 @@ myexp = np.exp(-k*cents)
 #plt.legend()
 #plt.show()
 
+# reject numbers above the exponential we want
 accept = y_lor < np.exp(-k*t)
 t_accept = t[accept]
 accept2 = t_accept>=0
@@ -53,14 +55,16 @@ t_use = t_accept[accept2]
 
 print(np.mean(t_use))
 print(np.std(t_use))
-print('percent accepted (efficiency): ', np.mean(accept)*100, '%'S)
+print('percent accepted (efficiency): ', np.mean(accept)*100, '%')
 #print(len(t_use)/2/len(myexp)) prints same efficiency as above line
 
 aa, bb = np.histogram(t_use, bins)
 aa = aa/aa.sum()
 
-plt.plot(cents,aa, '+', label = 'rejection method')
-plt.plot(cents, myexp/myexp.sum(), label = 'analytical')
+# plot histogram
+#plt.plot(cents,aa, '+', label = 'rejection method')
+plt.hist(t_use, bins = bins, density=True, label = 'samples')
+plt.plot(cents, myexp, label = 'analytical')
 plt.legend()
 plt.show()
 
